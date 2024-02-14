@@ -22,8 +22,8 @@ FROM nginx:alpine
 # Copy the built React app from the previous stage to NGINX web root directory
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Expose port 3000 to the outside world
-EXPOSE 3000
+# Expose port 80 to the outside world
+EXPOSE 80
 
 # Command to start NGINX when the container starts
 CMD ["nginx", "-g", "daemon off;"]
