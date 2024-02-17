@@ -1,17 +1,20 @@
 import logo from '../logo.svg';
 import '../App.css';
 import { useState, useEffect } from 'react';
-import { sampleApiCall } from './apiCalls';
+import { apiCall } from './apiCalls';
 import React from 'react';
 
 function Home() {
 
     const [result, setResult] = useState("")
 
-    useEffect(async () => {
-        const apiRes = await sampleApiCall();
-        console.log(apiRes);
-        setResult(apiRes);
+    useEffect(() => {
+        async function fetchData() {
+            apiCall.get("/").then(response => {
+                setResult(response.data)
+            }).catch(error => { return error; });
+        }
+        fetchData();
     }, []);
 
     return (
