@@ -10,7 +10,7 @@ function Home() {
 
     useEffect(() => {
         async function fetchData() {
-            apiCall.get("/").then(response => {
+            apiCall.get("/api-calorie").then(response => {
                 setResult(response.data)
             }).catch(error => { return error; });
         }
