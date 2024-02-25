@@ -3,6 +3,7 @@ import '../App.css';
 import { useState, useEffect } from 'react';
 import { apiCall } from './apiCalls';
 import React from 'react';
+import Profile from './authComponents/Profile';
 
 function Home() {
 
@@ -14,6 +15,7 @@ function Home() {
                 setResult(response.data)
             }).catch(error => { return error; });
         }
+        
         fetchData();
     }, []);
 
@@ -32,6 +34,9 @@ function Home() {
                 >
                     Learn React with {result}
                 </a>
+
+                <Profile />
+
             </header>
         </div>
     );
