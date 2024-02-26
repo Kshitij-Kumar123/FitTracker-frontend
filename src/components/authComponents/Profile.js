@@ -6,7 +6,10 @@ import LoginButton from "./Login";
 const Profile = () => {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const [token, setToken] = useState("")
+
     useEffect(() => {
+        const custom = () => console.log("csutom");
+
         const getAccessToken = async () => {
             try {
                 const token2 = await getAccessTokenSilently();
@@ -16,9 +19,14 @@ const Profile = () => {
             }
         };
 
-        getAccessToken()
+        if (isAuthenticated) custom()
+        getAccessToken();
 
-    }, [getAccessTokenSilently]);
+    }, [getAccessTokenSilently, isAuthenticated]);
+
+    useEffect(() => {
+        console.log("isAuthenticated: ", isAuthenticated)
+    }, [isAuthenticated]);
 
     if (isLoading) {
         return <div>Loading ...</div>;
@@ -30,7 +38,7 @@ const Profile = () => {
                 <img src={user.picture} alt={user.name} />
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
-                {console.log(token)}
+                {/* {console.log(token)} */}
                 <LogoutButton />
             </div>
         ) : <LoginButton />

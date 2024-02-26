@@ -1,17 +1,18 @@
 import logo from '../logo.svg';
 import '../App.css';
 import { useState, useEffect } from 'react';
-import { apiCall } from './apiCalls';
+import CalorieAxiosMiddleware from '../apicalls/calorieApi';
 import React from 'react';
 import Profile from './authComponents/Profile';
 
 function Home() {
 
     const [result, setResult] = useState("")
+    const calorieAxios = CalorieAxiosMiddleware();
 
     useEffect(() => {
         async function fetchData() {
-            apiCall.get("/api-calorie").then(response => {
+            calorieAxios.get("").then(response => {
                 setResult(response.data)
             }).catch(error => { return error; });
         }

@@ -8,7 +8,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
             authorizationParams={{
                 redirect_uri: window.location.origin,
                 audience: process.env.REACT_APP_AUTHO_AUDIENCE,
-              }}
+            }}
         >
             {children}
         </Auth0Provider>
