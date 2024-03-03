@@ -11,13 +11,13 @@ function Home() {
     const calorieAxios = CalorieAxiosMiddleware();
 
     useEffect(() => {
-        async function fetchData() {
-            calorieAxios.get("").then(response => {
-                setResult(response.data)
-            }).catch(error => { return error; });
-        }
+        // async function fetchData() {
+        //     calorieAxios.get("/").then(response => {
+        //         setResult(response.data)
+        //     }).catch(error => { return error; });
+        // }
         
-        fetchData();
+        // fetchData();
     }, []);
 
     return (
