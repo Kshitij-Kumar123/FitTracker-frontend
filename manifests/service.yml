@@ -6,7 +6,7 @@ metadata:
   labels:
     app: app1-winter-frontend
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     app: app1-winter-frontend
   ports:
