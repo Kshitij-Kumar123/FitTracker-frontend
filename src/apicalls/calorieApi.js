@@ -30,15 +30,18 @@ const CalorieAxiosMiddleware = () => {
         return response
     }, (error) => {
         // Rudimentary but works...
+        console.log(error)
         if (error.response.status) {
-            switch (error.response.status) {
-                case 403:
-                    navigate('/forbidden');
-                case 401:
-                    navigate('/')
-                default:
-                    navigate('/error')
-            }
+            // switch (error.response.status) {
+            //     case 403:
+            //         navigate('/forbidden');
+            //     case 401:
+            //         navigate('/')
+            //     default:
+            //         navigate('/error')
+            // }
+
+
         }
 
         return Promise.reject(error);
