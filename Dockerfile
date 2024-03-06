@@ -22,6 +22,9 @@ FROM nginx:alpine
 # Copy the built React app from the previous stage to NGINX web root directory
 COPY --from=builder /app/build /usr/share/nginx/html
 
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d
+
 # Expose port 80 to the outside world
 EXPOSE 80
 
