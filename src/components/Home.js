@@ -1,23 +1,26 @@
 import logo from '../logo.svg';
 import '../App.css';
 import { useState, useEffect } from 'react';
-import CalorieAxiosMiddleware from '../apicalls/calorieApi';
+import useAxiosConfigured from '../apicalls/AxiosConfigured';
 import React from 'react';
 import Profile from './authComponents/Profile';
 
 function Home() {
-
-    const [result, setResult] = useState("")
-    const calorieAxios = CalorieAxiosMiddleware();
+    const [result, setResult] = useState("");
+    const axiosInstance = useAxiosConfigured();
 
     useEffect(() => {
-        // async function fetchData() {
-        //     calorieAxios.get("/").then(response => {
-        //         setResult(response.data)
-        //     }).catch(error => { return error; });
-        // }
-        
-        // fetchData();
+        async function fetchData() {
+            try {
+                const response = await axiosInstance.get("/api-user");
+                console.log("Response:", response);
+                setResult(response.data);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
+        }
+
+        fetchData();
     }, []);
 
     return (
