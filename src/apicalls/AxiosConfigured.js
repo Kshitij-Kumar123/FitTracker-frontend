@@ -2,12 +2,12 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 
-const useAxiosConfigured = () => {
+const useAxiosConfigured = (apiEndpoint) => {
     const { getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
 
     const axiosInstance = axios.create({
-        baseURL: process.env.REACT_APP_API_ENDPOINT,
+        baseURL: apiEndpoint,
     });
 
     axiosInstance.interceptors.request.use(

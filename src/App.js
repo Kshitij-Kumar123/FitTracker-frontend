@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import Home from "./components/Home.js"
 import ErrorPage from './components/ErrorPages/ErrorPage.js';
 import ForbiddenPage from './components/ErrorPages/ForbiddenPage.js';
+import Activities from './components/Activities.js';
 import { Breadcrumb, Layout, Menu, theme, Avatar } from 'antd';
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from './components/authComponents/Login.js';
@@ -10,6 +11,7 @@ import LogoutButton from './components/authComponents/Login.js';
 import { UserOutlined } from '@ant-design/icons';
 import { Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import Dashboard from './components/Dashboard.js';
 
 const { Header, Content, Footer } = Layout;
 
@@ -55,9 +57,9 @@ function App() {
           <div key="signout" onClick={handleSignOut} style={{ display: 'flex', alignItems: 'center' }}>
             <img src={user.picture} alt={user.name} style={{ height: "40px", marginTop: 0, marginRight: 10 }} />
             <div><a style={{ marginLeft: 10, color: "white" }}>
-              <Space>
+              {/* <Space>
                 {user.email}
-              </Space>
+              </Space> */}
             </a>
               <a style={{ marginLeft: 10, color: "white" }} onClick={(e) => handleSignOut(e)}>
                 Sign Out
@@ -87,6 +89,8 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/activities" element={<Activities />} />
+            <Route path="/activity-dashboard" element={<Dashboard />} />
             <Route path="/home" element={<Home />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
