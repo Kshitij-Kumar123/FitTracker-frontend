@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Table, Badge, Modal, Descriptions } from 'antd';
-import { ThunderboltOutlined, TrophyOutlined } from '@ant-design/icons';
+import { ThunderboltOutlined, TrophyTwoTone } from '@ant-design/icons';
+import { LikeOutlined } from '@ant-design/icons';
+import { Card, Col, Row, Statistic } from 'antd';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 
 const ModalInfo = ({ data }) => {
     const labelledData = Object.entries(data).map(([key, value], index) => ({
@@ -15,6 +18,68 @@ const ModalInfo = ({ data }) => {
         );
     }
 };
+
+
+const Stats = ({ data }) => {
+    // some bs stats idk yet
+    return (
+        <> <Row gutter={[16, 16]}>
+            <Col span={12}>
+                <Card bordered={false}>
+                    <Statistic
+                        title="Distance Covered"
+                        value={11.28}
+                        precision={2}
+                        valueStyle={{ color: '#3f8600' }}
+                        prefix={<ArrowUpOutlined />}
+                        suffix="%"
+                    />
+                </Card>
+            </Col>
+            <Col span={12}>
+                <Card bordered={false}>
+                    <Statistic
+                        title="Move Minutes"
+                        value={9.3}
+                        precision={2}
+                        valueStyle={{ color: '#cf1322' }}
+                        prefix={<ArrowDownOutlined />}
+                        suffix="%"
+                    />
+                </Card>
+            </Col>
+        </Row>
+            <Row gutter={[16, 16]}>
+                <Col span={12}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Distance Covered"
+                            value={11.28}
+                            precision={2}
+                            valueStyle={{ color: '#3f8600' }}
+                            prefix={<ArrowUpOutlined />}
+                            suffix="%"
+                        />
+                    </Card>
+                </Col>
+                <Col span={12}>
+                    <Card bordered={false}>
+                        <Statistic
+                            title="Move Minutes"
+                            value={9.3}
+                            precision={2}
+                            valueStyle={{ color: '#cf1322' }}
+                            prefix={<ArrowDownOutlined />}
+                            suffix="%"
+                        />
+                    </Card>
+                </Col>
+            </Row>
+
+        </>
+
+    );
+}
 
 
 const ActivityDetails = ({ date, categories }) => {
@@ -42,7 +107,7 @@ const ActivityDetails = ({ date, categories }) => {
         {
             title: 'Status',
             key: 'state',
-            render: ({ status }) => status === "Good" ? <Badge status="success" text="Good" /> : (<><TrophyOutlined /> Finished</>),
+            render: ({ status }) => status === "Good" ? <Badge status="success" text="Good" /> : (<><TrophyTwoTone /> Finished</>),
         },
         {
             title: 'View', key: 'view',
@@ -69,7 +134,23 @@ const ActivityDetails = ({ date, categories }) => {
         {
             title: 'Status',
             key: 'state',
-            render: ({ status }) => status === "Good" ? <Badge status="success" text="Good" /> : (<><TrophyOutlined /> Finished</>),
+            render: ({ status }) => status === "Good" ? <Badge status="success" text="Good" /> : (<><TrophyTwoTone /> Finished</>),
+        },
+        {
+            title: 'View', key: 'view',
+            render: (e) => (
+                <div>
+                    <a onClick={showModal}>View</a>
+                    <Modal
+                        title="Basic Modal"
+                        open={visible}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                    >
+                        <ModalInfo data={e} />
+                    </Modal>
+                </div>
+            )
         },
         { title: 'Activity', dataIndex: 'name', key: 'name' },
         { title: 'Duration', dataIndex: 'duration', key: 'duration' },
@@ -192,9 +273,13 @@ const Dashboard = () => {
     }, {});
 
     return (
-        Object.entries(activitiesByDateAndCategory).map(([date, categories]) => (
-            <ActivityDetails key={date} date={date} categories={categories} />
-        ))
+        <>
+            <Stats data={{}} />
+            {Object.entries(activitiesByDateAndCategory).map(([date, categories]) => (
+                <ActivityDetails key={date} date={date} categories={categories} />
+            ))}
+        </>
+
     );
 }
 
