@@ -6,20 +6,26 @@ import ForbiddenPage from './components/ErrorPages/ForbiddenPage.js';
 import Activities from './components/Activities.js';
 import { Breadcrumb, Layout, Menu, theme, Grid } from 'antd';
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from './components/authComponents/Login.js';
-import LogoutButton from './components/authComponents/Login.js';
-import { UserOutlined } from '@ant-design/icons';
-import { Dropdown, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import Dashboard from './components/Dashboard.js';
 import ActivityInfo from './components/ActivityInfo.js';
+import { Outlet, Navigate } from 'react-router-dom'
 
 const { Header, Content, Footer } = Layout;
 const { useBreakpoint } = Grid;
 
+const PrivateRoutes = () => {
+  const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
+  if (!isLoading) {
+    if (isAuthenticated) {
+      return <Outlet />
+    } else {
+      return <Navigate to={loginWithRedirect()} />
+    }
+  }
+}
+
 function App() {
   const { xs } = useBreakpoint();
-
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -87,12 +93,15 @@ function App() {
             borderRadius: borderRadiusLG,
           }}
         >
+
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/activities" element={<Activities />} />
-            <Route path="/activities-dashboard" element={<Dashboard />} />
+            <Route element={<PrivateRoutes />}>
+              <Route path="/activities" element={<Activities />} />
+              <Route path="/activities-dashboard" element={<Dashboard />} />
+              <Route path="/info/*" element={<ActivityInfo />} />
+            </Route>
             <Route path="/home" element={<Home />} />
-            <Route path="/info/*" element={<ActivityInfo />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
           </Routes>
