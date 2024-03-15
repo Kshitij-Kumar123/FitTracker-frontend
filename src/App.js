@@ -90,7 +90,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/activities" element={<Activities />} />
-            <Route path="/activity-dashboard" element={<Dashboard />} />
+            <Route path="/activities-dashboard" element={<Dashboard />} />
             <Route path="/home" element={<Home />} />
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
