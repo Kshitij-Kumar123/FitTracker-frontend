@@ -14,6 +14,7 @@ import { Affix, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import CalorieTracking from './components/CalorieTracking.js';
+import CalorieDashboard from './components/CalorieDashboard.js';
 
 
 
@@ -59,6 +60,7 @@ function App() {
     { key: 'activities', link: '/activities', label: 'Activities' },
     { key: 'dashboard', link: '/activities-dashboard', label: 'Dashboard' },
     { key: 'calorieTracking', link: '/calorie-tracking', label: 'calorieTracking' },
+    { key: 'calorieDashboard', link: '/calorie-dashboard', label: 'calorieDashboard' },
   ].map(item => (
     <Menu.Item key={item.key}>
       <Link to={item.link}>{item.label}</Link>
@@ -116,6 +118,7 @@ function App() {
               <Route path="/activities-dashboard" element={<Dashboard />} />
               <Route path="/info/*" element={<ActivityInfo />} />
               <Route path="/calorie-tracking" element={<CalorieTracking />} />
+              <Route path="/calorie-dashboard" element={<CalorieDashboard/>} />
             </Route>
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />
