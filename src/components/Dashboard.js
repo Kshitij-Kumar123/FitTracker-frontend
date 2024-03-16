@@ -21,7 +21,7 @@ const ModalInfo = ({ data }) => {
 
 
 const Stats = ({ data }) => {
-    // some bs stats idk yet
+    // some bs stats idk
     return (
         <> <Row gutter={[16, 16]}>
             <Col span={12}>
@@ -274,6 +274,7 @@ const Dashboard = () => {
 
     return (
         <>
+            <h2 style={{ padding: 40, paddingLeft: 20 }}>Activities</h2>
             <Stats data={{}} />
             {Object.entries(activitiesByDateAndCategory).map(([date, categories]) => (
                 <ActivityDetails key={date} date={date} categories={categories} />

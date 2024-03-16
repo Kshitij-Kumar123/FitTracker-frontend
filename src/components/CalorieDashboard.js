@@ -3,9 +3,13 @@ import { Table, Modal } from 'antd';
 import CountUp from 'react-countup';
 import { Col, Row, Statistic, Divider, Descriptions } from 'antd';
 import { ArrowDownOutlined } from '@ant-design/icons';
+// import backgroundImg from './fitness.jpg'; // Import background image
+// import foodIcon from './assets/food-icon.png'; // Import food icon
 
+
+const foodIcon = "https://via.placeholder.com/15";
+const backgroundImg = "https://via.placeholder.com/15";
 const ModalInfo = ({ data }) => {
-    console.log("modal info data: ", data);
     const labelledData = Object.entries(data).map(([key, value], index) => ({
         key: index,
         label: key,
@@ -69,10 +73,13 @@ const CalorieDashboard = () => {
             dataIndex: 'foodName',
             key: 'foodName',
             render: (_, record) => (
-                <a onClick={() => {
+                <div onClick={() => {
                     setModalData(record);
                     setShowModal(true);
-                }}>{record.foodName}</a>
+                }}>
+                    <img src={foodIcon} alt="Food Icon" style={{ marginRight: 8, height: 20 }} />
+                    {record.foodName}
+                </div>
             )
         },
         {
@@ -89,24 +96,22 @@ const CalorieDashboard = () => {
     ];
 
     return (
-        <div style={{ padding: 40 }}>
-            <h1>Calorie Dashboard</h1>
+        <div style={{ padding: 40, backgroundSize: 'cover' }}>
+            <h1 style={{ marginBottom: 20 }}>Calorie Dashboard</h1>
             {Object.entries(groupedData).map(([date, value], index) => (
-                <div key={index}>
-                    <Divider><h4>{date}</h4></Divider>
+                <div key={index} style={{ marginBottom: 40, backgroundColor: 'rgba(255, 255, 255, 0.8)', padding: 20, borderRadius: 8 }}>
+                    <Divider orientation="left" style={{ color: '#1890ff' }}>{date}</Divider>
                     <Row gutter={16} style={{ marginBottom: 16 }}>
-                        <Col span={8}>
+                        <Col md={6} xs={12}>
                             <Statistic title="Calorie Budget" value={2500} />
                         </Col>
-                        <Col span={8}>
+                        <Col md={6} xs={12}>
                             <Statistic title="Calorie Consumed" value={2200} precision={2} />
                         </Col>
-                        <Col span={8}>
+                        <Col md={6} xs={12}>
                             <Statistic title="Calorie Burned" value={200} precision={2} />
                         </Col>
-                    </Row>
-                    <Row gutter={16} style={{ marginBottom: 16 }}>
-                        <Col span={8}>
+                        <Col md={6} xs={12}>
                             <Statistic
                                 valueStyle={{ color: '#cf1322' }}
                                 prefix={<ArrowDownOutlined />}

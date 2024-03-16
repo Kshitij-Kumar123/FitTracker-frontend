@@ -1,0 +1,19 @@
+.calorie-dashboard {
+    padding: 40px;
+}
+
+.dashboard-section {
+    margin-bottom: 40px;
+}
+
+.stats-row {
+    text-align: center;
+}
+
+.data-table {
+    margin-top: 20px;
+}
+
+.health-stats {
+    margin-top: 20px;
+}
