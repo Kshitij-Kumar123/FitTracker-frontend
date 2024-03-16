@@ -63,7 +63,6 @@ function App() {
     { key: 'calorieTracking', link: '/calorie-tracking', label: 'calorieTracking' },
     { key: 'calorieDashboard', link: '/calorie-dashboard', label: 'calorieDashboard' },
     { key: 'weightTracking', link: '/weight-tracking', label: 'weightTracking' },
-
   ].map(item => (
     <Menu.Item key={item.key}>
       <Link to={item.link}>{item.label}</Link>
@@ -81,7 +80,7 @@ function App() {
         <Menu
           theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['home']}
+          defaultSelectedKeys={[location.pathname]}
           style={{ flex: 1, minWidth: 0 }}
         >
           {menuItems}

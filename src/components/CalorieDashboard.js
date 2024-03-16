@@ -96,13 +96,13 @@ const CalorieDashboard = () => {
                     <Divider><h4>{date}</h4></Divider>
                     <Row gutter={16} style={{ marginBottom: 16 }}>
                         <Col span={8}>
-                            <Statistic title="Calorie Budget" value={2500} formatter={formatter} />
+                            <Statistic title="Calorie Budget" value={2500} />
                         </Col>
                         <Col span={8}>
-                            <Statistic title="Calorie Consumed" value={2200} precision={2} formatter={formatter} />
+                            <Statistic title="Calorie Consumed" value={2200} precision={2} />
                         </Col>
                         <Col span={8}>
-                            <Statistic title="Calorie Burned" value={200} precision={2} formatter={formatter} />
+                            <Statistic title="Calorie Burned" value={200} precision={2} />
                         </Col>
                     </Row>
                     <Row gutter={16} style={{ marginBottom: 16 }}>
@@ -110,7 +110,7 @@ const CalorieDashboard = () => {
                             <Statistic
                                 valueStyle={{ color: '#cf1322' }}
                                 prefix={<ArrowDownOutlined />}
-                                title="Calorie Deficit" value={500} formatter={formatter} />
+                                title="Calorie Deficit" value={500} />
                         </Col>
                     </Row>
                     <Table key={index} scroll={{ x: true }} columns={columns} dataSource={value} />

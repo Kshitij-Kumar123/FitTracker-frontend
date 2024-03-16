@@ -26,8 +26,8 @@ const Home = () => {
                 Start your fitness journey with our app! Whether you're looking to track your workouts, set goals, or get personalized recommendations, we've got you covered.
             </Paragraph>
             <Button type="primary" size="large" style={{ marginBottom: '24px' }}>Get Started</Button>
-            <Row gutter={24}>
-                <Col span={8}>
+            <Row gutter={[24, 24]}>
+                <Col xs={24} md={8}>
                     <div style={{ height: '100%' }}>
                         <Card
                             cover={<img alt="Track Your Workouts" src="https://via.placeholder.com/300" style={{ height: '100%' }} />}
@@ -40,7 +40,7 @@ const Home = () => {
                         </Card>
                     </div>
                 </Col>
-                <Col span={8}>
+                <Col xs={24} md={8}>
                     <div style={{ height: '100%' }}>
                         <Card
                             cover={<img alt="Set Goals" src="https://via.placeholder.com/300" style={{ height: '100%' }} />}
@@ -53,7 +53,7 @@ const Home = () => {
                         </Card>
                     </div>
                 </Col>
-                <Col span={8}>
+                <Col xs={24} md={8}>
                     <div style={{ height: '100%' }}>
                         <Card
                             cover={<img alt="Get Recommendations" src="https://via.placeholder.com/300" style={{ height: '100%' }} />}
