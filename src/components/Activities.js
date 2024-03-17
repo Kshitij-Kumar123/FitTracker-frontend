@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, notification, Select, InputNumber, Row, Col, Slider } from 'antd';
+import { Form, Input, Button, DatePicker, notification, Select, InputNumber, Row, Col, Slider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import useAxiosConfigured from '../apicalls/AxiosConfigured';
 import { useNavigate } from 'react-router-dom';
@@ -61,13 +61,13 @@ const Activities = () => {
         // }
         // TODO: add userId to it
         try {
-            const currentDate = new Date();
-            const formattedDate = currentDate.toLocaleString();
+            const dateToSubmit = form.getFieldValue('date') ? new Date(form.getFieldValue('date')) : new Date();
+            const formattedDate = dateToSubmit.toLocaleString();
             const reqBody = {
                 ...values,
                 date: formattedDate,
-                duration: values?.hours * 60 + values.minutes,
-                usefulLinks: values.usefulLinks.map(value => value.textbox),
+                duration: values?.hours || 0 * 60 + values?.minutes || 0,
+                usefulLinks: values?.usefulLink?.map(value => value.textbox) || [],
                 userId: user.sub
             }
             const response = await fitnessService.post('/', reqBody);
@@ -104,6 +104,7 @@ const Activities = () => {
         // form.setFieldsValue({ name: filteredActivities?.length > 0 ? filteredActivities : undefined });
         setSelectedActivities(filteredActivities);
     };
+
 
     return (
         <div style={{ padding: 40 }}>
@@ -152,6 +153,12 @@ const Activities = () => {
                     />
                 </Form.Item>
                 <Form.Item
+                    label="Date"
+                    name="date"
+                >
+                    {<DatePicker style={{ width: '100%' }} />}
+                </Form.Item>
+                <Form.Item
                     name="speed"
                     label="Speed"
                 >
@@ -164,6 +171,26 @@ const Activities = () => {
                             >
                                 <Option value="kph">kph</Option>
                                 <Option value="mph">mph</Option>
+                            </Select>
+                        </Form.Item>}
+                        style={{
+                            width: '100%',
+                        }}
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="distance"
+                    label="Distance"
+                >
+                    <InputNumber
+                        addonAfter={<Form.Item name="distanceUnit" noStyle>
+                            <Select
+                                style={{
+                                    width: 70,
+                                }}
+                            >
+                                <Option value="km">km</Option>
+                                <Option value="mi">mi</Option>
                             </Select>
                         </Form.Item>}
                         style={{

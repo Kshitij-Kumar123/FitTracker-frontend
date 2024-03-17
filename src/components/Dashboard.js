@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Table, Badge, Modal, Descriptions } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Badge, Modal, Descriptions, Spin } from 'antd';
 import { TrophyTwoTone } from '@ant-design/icons';
 import { Card, Col, Row, Statistic } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import useAxiosConfigured from '../apicalls/AxiosConfigured';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const ModalInfo = ({ data }) => {
     const labelledData = Object.entries(data).map(([key, value], index) => ({
@@ -84,6 +86,7 @@ const Stats = ({ data }) => {
 const ActivityDetails = ({ date, categories }) => {
     const [visible, setVisible] = useState(false);
 
+
     const showModal = () => {
         setVisible(true);
     };
@@ -103,11 +106,6 @@ const ActivityDetails = ({ date, categories }) => {
     };
 
     const weightExercisesCols = [
-        {
-            title: 'Status',
-            key: 'state',
-            render: ({ status }) => status === "Good" ? <Badge status="success" text="Good" /> : (<><TrophyTwoTone /> Finished</>),
-        },
         {
             title: 'View', key: 'view',
             render: (e) => (
@@ -176,106 +174,34 @@ const ActivityDetails = ({ date, categories }) => {
 };
 
 const Dashboard = () => {
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleString();
-    const activities = [{
-        "category": "Cardio",
-        "status": "good",
-        "name": "Crunch Machine",
-        "date": formattedDate,
-        "weightUnit": "kg",
-        "weight": 10,
-        "speedUnit": "mph",
-        "speed": "6 kph",
-        "hours": 2,
-        "minutes": 1,
-        "extraNotes": "some note",
-        "calorieBurned": 20,
-        "usefulLinks": [
-            {
-                "textbox": "google.com"
-            }
-        ]
-    }, {
-        "category": "Cardio",
-        "status": "good",
-        "name": "Crunch Machine",
-        "date": formattedDate,
-        "weightUnit": "kg",
-        "weight": 10,
-        "speedUnit": "mph",
-        "speed": "6 kph",
-        "hours": 2,
-        "minutes": 1,
-        "extraNotes": "some note",
-        "calorieBurned": 20,
-        "usefulLinks": [
-            {
-                "textbox": "google.com"
-            }
-        ]
-    }, {
-        "category": "Back",
-        "status": "best",
-        "name": "Crunch Machine",
-        "date": "3/13/2024, 6:00:30 PM",
-        "weightUnit": "kg",
-        "weight": 10,
-        "speedUnit": "mph",
-        "speed": "6 kph",
-        "hours": 2,
-        "minutes": 1,
-        "extraNotes": "some note",
-        "calorieBurned": 20,
-        "usefulLinks": [
-            {
-                "textbox": "google.com"
-            }
-        ]
-    }, {
-        "category": "Back",
-        "status": "best",
-        "name": "Crunch Machine",
-        "date": formattedDate,
-        "weightUnit": "kg",
-        "weight": 10,
-        "speedUnit": "mph",
-        "speed": "6 kph",
-        "hours": 2,
-        "minutes": 1,
-        "extraNotes": "some note",
-        "calorieBurned": 20,
-        "usefulLinks": [
-            {
-                "textbox": "google.com"
-            }
-        ]
-    }];
+    const fitnessService = useAxiosConfigured(process.env.REACT_APP_FITNESS_BASE_URL);
+    const [activities, setActivities] = useState([]);
+    const { user } = useAuth0();
 
-    // Categorize activities by date
-    const activitiesByDate = activities.reduce((acc, activity) => {
-        const { date } = activity;
-        acc[date] = acc[date] || {};
-        return acc;
-    }, {});
-
-    // Categorize activities by category within each date category
-    const activitiesByDateAndCategory = Object.keys(activitiesByDate).reduce((acc, date) => {
-        acc[date] = activities.reduce((activityAcc, activity) => {
-            if (activity.date === date) {
-                activityAcc[activity.category] = activityAcc[activity.category] || [];
-                activityAcc[activity.category].push(activity);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fitnessService(`/user/${user.sub}`);
+                if (response.status == 200) {
+                    setActivities(response.data.activities);
+                    console.log(response.data);
+                }
+            } catch (err) {
+                console.log(err);
             }
-            return activityAcc;
-        }, {});
-        return acc;
-    }, {});
+        }
+        fetchData();
+    }, []);
+
+    if (activities.length === 0) {
+        return <Spin />
+    }
 
     return (
         <>
             <h2 style={{ padding: 40, paddingLeft: 20 }}>Activities</h2>
             <Stats data={{}} />
-            {Object.entries(activitiesByDateAndCategory).map(([date, categories]) => (
+            {Object.entries(activities).map(([date, categories]) => (
                 <ActivityDetails key={date} date={date} categories={categories} />
             ))}
         </>
