@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Row, Col, Typography } from 'antd';
 import fitnessImage from './fitness.jpg'; // Import a fitness-related image
 import { useAuth0 } from "@auth0/auth0-react";

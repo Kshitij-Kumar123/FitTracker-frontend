@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import Auth0ProviderWithHistory from './components/authComponents/Auth0ProviderWrapper';
+import { MyProvider } from "./components/userContext"
 
 ReactDOM.render(
-  <BrowserRouter>
-    <Auth0ProviderWithHistory>
-      <App />
-    </Auth0ProviderWithHistory>
-  </BrowserRouter>,
+  <MyProvider>
+    <BrowserRouter>
+      <Auth0ProviderWithHistory>
+        <App />
+      </Auth0ProviderWithHistory>
+    </BrowserRouter>
+  </MyProvider>,
   document.getElementById("root")
 );

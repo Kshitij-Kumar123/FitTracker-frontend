@@ -1,4 +1,5 @@
 import './App.css';
+import React, { useContext, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Home from "./components/Home.js";
 import ErrorPage from './components/ErrorPages/ErrorPage.js';
@@ -16,6 +17,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import CalorieTracking from './components/CalorieTracking.js';
 import CalorieDashboard from './components/CalorieDashboard.js';
 import WeightTracking from './components/WeightTracking.js';
+import useAxiosConfigured from './apicalls/AxiosConfigured.js';
+import UserContext from './components/userContext.js';
 
 
 
@@ -50,6 +53,43 @@ function App() {
   const { logout } = useAuth0();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { userInfo, setUserInfo } = useContext(UserContext);
+
+  const userService = useAxiosConfigured(process.env.REACT_APP_USER_BASE_URL);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!isAuthenticated || isLoading) return;
+      if (userInfo) return
+      try {
+        let getUserInfo = await userService.get(`/${user.sub}`);
+        if (Object.keys(getUserInfo.data).length == 0) {
+          // TODO: Redirect them to a new page to set their goals - later issue 
+          const newUser = {
+            userId: user.sub,
+            targets: {
+              calorieBudget: 2500,
+              weightGoal: 80
+            },
+            unitPreferences: "metric",
+            // ... more to determine
+          };
+          const response = await userService.post("/", newUser);
+          if (response.status >= 200) { getUserInfo = newUser; }
+        }
+
+        setUserInfo(getUserInfo.data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData(); // Invoke the async function
+
+  }, [isAuthenticated]);
+
+  console.log("userInfo from context: ", userInfo);
 
   const handleSignOut = (e) => {
     e.preventDefault();
@@ -120,8 +160,8 @@ function App() {
               <Route path="/activities-dashboard" element={<Dashboard />} />
               <Route path="/info/*" element={<ActivityInfo />} />
               <Route path="/calorie-tracking" element={<CalorieTracking />} />
-              <Route path="/calorie-dashboard" element={<CalorieDashboard/>} />
-              <Route path="/weight-tracking" element={<WeightTracking/>} />
+              <Route path="/calorie-dashboard" element={<CalorieDashboard />} />
+              <Route path="/weight-tracking" element={<WeightTracking />} />
             </Route>
             <Route path="/error" element={<ErrorPage />} />
             <Route path="/forbidden" element={<ForbiddenPage />} />

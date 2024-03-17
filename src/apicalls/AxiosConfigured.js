@@ -14,7 +14,6 @@ const useAxiosConfigured = (apiEndpoint) => {
         async (config) => {
             try {
                 const accessToken = await getAccessTokenSilently();
-                console.log("access token: ", accessToken);
                 config.headers.Authorization = `Bearer ${accessToken}`;
             } catch (error) {
                 console.error('Error getting access token:', error);
