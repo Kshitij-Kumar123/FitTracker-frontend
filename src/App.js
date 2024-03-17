@@ -89,8 +89,6 @@ function App() {
 
   }, [isAuthenticated]);
 
-  console.log("userInfo from context: ", userInfo);
-
   const handleSignOut = (e) => {
     e.preventDefault();
     logout({ returnTo: window.location.origin });

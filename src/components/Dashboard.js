@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Badge, Modal, Descriptions } from 'antd';
-import { ThunderboltOutlined, TrophyTwoTone } from '@ant-design/icons';
-import { LikeOutlined } from '@ant-design/icons';
+import { TrophyTwoTone } from '@ant-design/icons';
 import { Card, Col, Row, Statistic } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 
@@ -164,7 +163,7 @@ const ActivityDetails = ({ date, categories }) => {
             <h1>{formatDate(date)}</h1>
             {Object.entries(categories).map(([category, data], index) => (
                 <div key={index}>
-                    <h2>{category} <ThunderboltOutlined /></h2>
+                    <h2>{category}</h2>
                     <Table
                         columns={category === "Cardio" ? cardioExercisesCols : weightExercisesCols}
                         dataSource={data}

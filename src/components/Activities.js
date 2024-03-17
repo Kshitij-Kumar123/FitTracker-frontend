@@ -3,24 +3,42 @@ import { Form, Input, Button, notification, Select, InputNumber, Row, Col, Slide
 import { PlusOutlined } from '@ant-design/icons';
 import useAxiosConfigured from '../apicalls/AxiosConfigured';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const Activities = () => {
     const [form] = Form.useForm();
+    const [selectedActivities, setSelectedActivities] = useState([]);
     const fitnessService = useAxiosConfigured(process.env.REACT_APP_FITNESS_BASE_URL);
     const categories = ["Abs", "Back", "Biceps", "Cardio", "Chest", "Legs", "Shoulders", "Triceps"];
-    const activities = [
-        "Cable Crunch",
-        "Crunch",
-        "Crunch Machine",
-        "Decline Crunch",
-        "Dragon Flag",
-        "Hanging Knee Raise",
-        "Plank",
-        "Side Plank"
-    ];
+    const { user } = useAuth0();
+
+
+    const activities = {
+        "Abs": [
+            "Cable Crunch",
+            "Crunch",
+            "Crunch Machine",
+            "Decline Crunch",
+            "Dragon Flag",
+            "Hanging Knee Raise",
+            "Plank",
+            "Side Plank"
+        ],
+        "Cardio": [
+            "Cycling",
+            "Elliptical Trainer",
+            "Rowing Machine",
+            "Running",
+            "Stationary Bike",
+            "Swimming",
+            "Walking"
+        ],
+        // ... add more later
+    }
+
 
     const navigate = useNavigate();
 
@@ -38,11 +56,8 @@ const Activities = () => {
         //     "minutes": 1,
         //     "extraNotes": "some note",
         //     "calorieBurned": -20,
-        //     "usefulLinks": [
-        //         {
-        //             "textbox": "google.com"
-        //         }
-        //     ]
+        //     "usefulLinks": ["google.com"]
+        //     "userId": "something"
         // }
         // TODO: add userId to it
         try {
@@ -51,11 +66,11 @@ const Activities = () => {
             const reqBody = {
                 ...values,
                 date: formattedDate,
-                duration: values.hours * 60 + values.minutes,
+                duration: values?.hours * 60 + values.minutes,
+                usefulLinks: values.usefulLinks.map(value => value.textbox),
+                userId: user.sub
             }
-
-            // const response = await fitnessService.post('/', reqBody);
-            const response = { status: 200 }
+            const response = await fitnessService.post('/', reqBody);
             if (response.status >= 200 && response.status < 300) {
                 console.log('Request was successful');
                 console.log('Response:', response.data);
@@ -74,11 +89,20 @@ const Activities = () => {
         }
     };
 
-    const [value, setValue] = useState(8);
+    const [value, setValue] = useState(0);
     const maxSliderValue = 15;
 
     const handleChange = (newValue) => {
         setValue(newValue);
+    };
+
+    const handleCategoryChange = (selectedCategory) => {
+        // Filter activities based on the selected category
+        const filteredActivities = activities[selectedCategory]
+        // Update the options of the "Activity" field
+        form.setFieldsValue({ name: undefined }); // Reset the selected value first
+        // form.setFieldsValue({ name: filteredActivities?.length > 0 ? filteredActivities : undefined });
+        setSelectedActivities(filteredActivities);
     };
 
     return (
@@ -93,7 +117,7 @@ const Activities = () => {
                 autoComplete="off"
             >
                 <Form.Item label="Category" name="category">
-                    <Select>
+                    <Select onChange={handleCategoryChange}>
                         {categories.map(category => (
                             <Option key={category} value={category}>{category}</Option>
                         ))}
@@ -101,7 +125,7 @@ const Activities = () => {
                 </Form.Item>
                 <Form.Item label="Activity" name="name">
                     <Select>
-                        {activities.map(activity => (
+                        {selectedActivities?.map(activity => (
                             <Option key={activity} value={activity}>{activity}</Option>
                         ))}
                     </Select>
