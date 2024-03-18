@@ -1,69 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Table, Modal } from 'antd';
-import CountUp from 'react-countup';
 import { Col, Row, Statistic, Divider, Descriptions } from 'antd';
 import { ArrowDownOutlined } from '@ant-design/icons';
-// import backgroundImg from './fitness.jpg'; // Import background image
-// import foodIcon from './assets/food-icon.png'; // Import food icon
+import useAxiosConfigured from '../apicalls/AxiosConfigured';
+import UserContext from './userContext';
+import { useAuth0 } from "@auth0/auth0-react";
 
+const datetimeFormatter = (dateString, dateFormat = true) => {
+    const date = new Date(dateString);
+    const options = dateFormat ? { month: 'long', day: 'numeric', year: 'numeric' } : { hour: 'numeric', minute: 'numeric', hour12: true };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    return formattedDate;
+}
 
-const foodIcon = "https://via.placeholder.com/15";
-const backgroundImg = "https://via.placeholder.com/15";
 const ModalInfo = ({ data }) => {
-    const labelledData = Object.entries(data).map(([key, value], index) => ({
-        key: index,
-        label: key,
-        children: <>{`${value}`}</>
-    }));
+    const labelledData = Object.entries(data)
+        .filter(([key]) => key !== '_id' && key !== 'id' && key !== "userId" && key !== "date") // Filter out _id and id properties
+        .map(([key, value], index) => ({
+            key: index,
+            label: key,
+            children: <>{`${value}`}</>
+        }));
 
     return (
         <Descriptions layout="vertical" items={labelledData} />
     );
 };
 
-const data = [
-    {
-        key: '1',
-        foodName: 'Apple',
-        calories: 52,
-        date: "3/13/2024, 6:00:30 PM",
-    },
-    {
-        key: '2',
-        foodName: 'Banana',
-        calories: 89,
-        date: "3/16/2024, 6:00:30 PM",
-    },
-    // Add more data rows as needed
-];
-
-const healthData = {
-    protein: 100,
-    fat: 100,
-    trans_fat: 100,
-    fiber: 100,
-    sodium: 100,
-    calcium: 100
-};
-
-const bsdata = Object.entries(healthData).map(([key, value], index) => ({
-    key: index,
-    label: key,
-    children: <>{`${value}`}</>
-}));
-
-const groupedData = data.reduce((acc, item) => {
-    const date = item.date.split(',')[0]; // Extract the date part
-    if (!acc[date]) {
-        acc[date] = [];
-    }
-    acc[date].push(item);
-    return acc;
-}, {});
-
-const formatter = (value) => <CountUp end={value} separator="," />;
-
 const CalorieDashboard = () => {
+    const [itemsData, setItemsData] = useState([]);
+    const calorieService = useAxiosConfigured(process.env.REACT_APP_CALORIE_BASE_URL);
+    const { userInfo } = useContext(UserContext);
+    const { user } = useAuth0();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await calorieService.get(`/${user.sub}`);
+                if (response.status === 200) {
+
+                    setItemsData(response.data);
+                    console.log(response.data);
+                } else {
+                    console.log('Failed to fetch data:', response.status);
+                }
+            } catch (err) {
+                console.log('Error fetching data:', err);
+            }
+        }
+        fetchData();
+    }, []);
+
     const [showModal, setShowModal] = useState(false);
     const [modalData, setModalData] = useState(null);
 
@@ -77,57 +64,54 @@ const CalorieDashboard = () => {
                     setModalData(record);
                     setShowModal(true);
                 }}>
-                    <img src={foodIcon} alt="Food Icon" style={{ marginRight: 8, height: 20 }} />
                     {record.foodName}
                 </div>
             )
         },
         {
             title: 'Time',
-            dataIndex: 'date',
-            key: 'date',
+            dataIndex: 'time',
+            key: 'time',
+            render: (time) => <>{datetimeFormatter(time, false).split(", ")[1]}</>
         },
         {
             title: 'Calories',
             dataIndex: 'calories',
             key: 'calories',
-        },
-        // Add more columns as needed
+        }
     ];
 
+    console.log("context userinfo: ", userInfo);
     return (
         <div style={{ padding: 40, backgroundSize: 'cover' }}>
             <h1 style={{ marginBottom: 20 }}>Calorie Dashboard</h1>
-            {Object.entries(groupedData).map(([date, value], index) => (
+            {Object.entries(itemsData).map(([date, value], index) => (
                 <div key={index} style={{ marginBottom: 40, backgroundColor: 'rgba(255, 255, 255, 0.8)', padding: 20, borderRadius: 8 }}>
-                    <Divider orientation="left" style={{ color: '#1890ff' }}>{date}</Divider>
+                    <Divider orientation="left" style={{ color: '#1890ff' }}>{datetimeFormatter(date)}</Divider>
                     <Row gutter={16} style={{ marginBottom: 16 }}>
-                        <Col md={6} xs={12}>
-                            <Statistic title="Calorie Budget" value={2500} />
+                        <Col md={8} xs={12}>
+                            <Statistic title="Calorie Budget" value={userInfo?.targets?.calorieBudget} />
                         </Col>
-                        <Col md={6} xs={12}>
-                            <Statistic title="Calorie Consumed" value={2200} precision={2} />
+                        {/* {console.error("rackljlkdljkh;dsa: ", value)} */}
+                        <Col md={8} xs={12}>
+                            <Statistic title="Calorie Consumed" value={Math.ceil(value.totalCalories) ?? 0} precision={2} />
                         </Col>
-                        <Col md={6} xs={12}>
-                            <Statistic title="Calorie Burned" value={200} precision={2} />
-                        </Col>
-                        <Col md={6} xs={12}>
+                        <Col md={8} xs={12}>
                             <Statistic
                                 valueStyle={{ color: '#cf1322' }}
                                 prefix={<ArrowDownOutlined />}
-                                title="Calorie Deficit" value={500} />
+                                title="Calorie Deficit" value={userInfo?.targets?.calorieBudget - value.totalCalories} />
                         </Col>
                     </Row>
-                    <Table key={index} scroll={{ x: true }} columns={columns} dataSource={value} />
+                    {value.items && <Table key={index} scroll={{ x: true }} columns={columns} dataSource={value.items} />}
                     <Modal
                         title="Food Details"
-                        visible={showModal}
+                        open={showModal}
                         onCancel={() => setShowModal(false)}
                         footer={null}
                     >
                         {modalData && <ModalInfo data={modalData} />}
                     </Modal>
-                    <Descriptions layout="horizontal" items={bsdata} />
                 </div>
             ))}
         </div>

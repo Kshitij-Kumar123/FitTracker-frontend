@@ -67,7 +67,7 @@ function App() {
         if (Object.keys(getUserInfo.data).length == 0) {
           // TODO: Redirect them to a new page to set their goals - later issue 
           const newUser = {
-            userId: user.sub,
+            sub: user.sub,
             targets: {
               calorieBudget: 2500,
               weightGoal: 80

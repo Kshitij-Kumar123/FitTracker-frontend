@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, InputNumber, Button, DatePicker, notification } from 'antd';
+import { Form, Input, InputNumber, Button, TimePicker, DatePicker, notification } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { AutoComplete } from 'antd';
 import useAxiosConfigured from '../apicalls/AxiosConfigured';
@@ -15,7 +15,7 @@ const CalorieTracking = () => {
     const onFinish = async (values) => {
         console.log('Submitted values:', values);
         // You can handle submission logic here
-        const reqBody = {...values, userId: user.sub}
+        const reqBody = { ...values, userId: user.sub }
         try {
             const response = await calorieService.post("/", reqBody);
             if (response.status == 200 || response.status === 201) {
@@ -140,6 +140,13 @@ const CalorieTracking = () => {
                     rules={[{ required: true, message: 'Please select the date!' }]}
                 >
                     <DatePicker style={{ width: '100%' }} />
+                </Form.Item>
+                <Form.Item label="time" name="time">
+                    <TimePicker
+                        format="h:mm A" // You can adjust the format as per your requirement
+                        placeholder="Select Time"
+                        style={{ width: 200 }}
+                    />
                 </Form.Item>
                 <Form.Item
                     label="Saturated Fat"
