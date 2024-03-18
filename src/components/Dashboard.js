@@ -21,64 +21,79 @@ const ModalInfo = ({ data }) => {
 };
 
 
+
 const Stats = ({ data }) => {
-    // some bs stats idk
+    const { improvementStats, stats } = data;
+
+    // Function to render Statistic components based on improvement stats
+    const renderImprovementStats = () => {
+        return Object.keys(improvementStats).map(category => {
+            return Object.keys(improvementStats[category]).map(workout => {
+                return Object.keys(improvementStats[category][workout]).map(metric => {
+                    const improvementData = improvementStats[category][workout][metric];
+                    return (
+                        <Col span={12} key={`${category}-${workout}-${metric}`}>
+                            <Card bordered={false}>
+                                <Statistic
+                                    title={`${workout} ${metric}`}
+                                    value={improvementData.improvement}
+                                    precision={2}
+                                    valueStyle={{ color: improvementData.improvement >= 0 ? '#3f8600' : '#cf1322' }}
+                                    prefix={improvementData.improvement >= 0 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+                                    suffix="%"
+                                />
+                            </Card>
+                        </Col>
+                    );
+                });
+            });
+        });
+    };
+    // Function to render Statistic components based on stats
+    const renderStats = () => {
+        return Object.keys(stats).map(week => {
+            return Object.keys(stats[week]).map(category => {
+                return Object.keys(stats[week][category]).map(workout => {
+                    const workoutData = stats[week][category][workout];
+                    if (Object.keys(workoutData).length > 0) {
+                        return (
+                            <>
+                                <Col span={12} key={`${week}-${category}-${workout}`}>
+                                    <Card bordered={false} style={{ marginBottom: 16 }}>
+                                        <h3 style={{ marginBottom: 16 }}>{`${week} - ${category} - ${workout}`}</h3>
+                                        <div style={{ marginBottom: 8 }}>
+                                            <strong>Total Weight:</strong> {workoutData.totalWeight}
+                                        </div>
+                                        <div style={{ marginBottom: 8 }}>
+                                            <strong>Reps:</strong> {workoutData.reps}
+                                        </div>
+                                        <div style={{ marginBottom: 8 }}>
+                                            <strong>Count:</strong> {workoutData.count}
+                                        </div>
+                                        <div>
+                                            <strong>Avg Weight:</strong> {workoutData.avgWeight}
+                                        </div>
+                                    </Card>
+                                </Col>
+                            </>
+                        );
+                    }
+                    return null; // Skip rendering if no data available
+                });
+            });
+        });
+    };
+
     return (
-        <> <Row gutter={[16, 16]}>
-            <Col span={12}>
-                <Card bordered={false}>
-                    <Statistic
-                        title="Distance Covered"
-                        value={11.28}
-                        precision={2}
-                        valueStyle={{ color: '#3f8600' }}
-                        prefix={<ArrowUpOutlined />}
-                        suffix="%"
-                    />
-                </Card>
-            </Col>
-            <Col span={12}>
-                <Card bordered={false}>
-                    <Statistic
-                        title="Move Minutes"
-                        value={9.3}
-                        precision={2}
-                        valueStyle={{ color: '#cf1322' }}
-                        prefix={<ArrowDownOutlined />}
-                        suffix="%"
-                    />
-                </Card>
-            </Col>
-        </Row>
+        <div>
+            <h3 style={{ marginLeft: 20 }}>Workout Insights</h3>
             <Row gutter={[16, 16]}>
-                <Col span={12}>
-                    <Card bordered={false}>
-                        <Statistic
-                            title="Distance Covered"
-                            value={11.28}
-                            precision={2}
-                            valueStyle={{ color: '#3f8600' }}
-                            prefix={<ArrowUpOutlined />}
-                            suffix="%"
-                        />
-                    </Card>
-                </Col>
-                <Col span={12}>
-                    <Card bordered={false}>
-                        <Statistic
-                            title="Move Minutes"
-                            value={9.3}
-                            precision={2}
-                            valueStyle={{ color: '#cf1322' }}
-                            prefix={<ArrowDownOutlined />}
-                            suffix="%"
-                        />
-                    </Card>
-                </Col>
+                {/* Render improvement stats */}
+                {renderImprovementStats()}
+                {/* Render stats */}
+                {renderStats()}
             </Row>
-
-        </>
-
+        </div>
     );
 }
 
@@ -176,14 +191,18 @@ const ActivityDetails = ({ date, categories }) => {
 const Dashboard = () => {
     const fitnessService = useAxiosConfigured(process.env.REACT_APP_FITNESS_BASE_URL);
     const [activities, setActivities] = useState([]);
+    const [stats, setStats] = useState({});
     const { user } = useAuth0();
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fitnessService(`/user/${user.sub}`);
+                let response = await fitnessService(`/user/${user.sub}`);
                 if (response.status == 200) {
-                    setActivities(response.data.activities);
+                    const { activities, improvementStats, stats } = response.data;
+                    setActivities(activities);
+                    setStats({ improvementStats: improvementStats, stats: stats });
                     console.log(response.data);
                 }
             } catch (err) {
@@ -200,7 +219,7 @@ const Dashboard = () => {
     return (
         <>
             <h2 style={{ padding: 40, paddingLeft: 20 }}>Activities</h2>
-            <Stats data={{}} />
+            <Stats data={stats} />
             {Object.entries(activities).map(([date, categories]) => (
                 <ActivityDetails key={date} date={date} categories={categories} />
             ))}

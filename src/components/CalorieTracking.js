@@ -1,15 +1,35 @@
 import React from 'react';
-import { Form, Input, InputNumber, Button, DatePicker, Row, Col } from 'antd';
+import { Form, Input, InputNumber, Button, DatePicker, notification } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { AutoComplete } from 'antd';
+import useAxiosConfigured from '../apicalls/AxiosConfigured';
+import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from 'react-router-dom';
 
 const CalorieTracking = () => {
-    const onFinish = (values) => {
+
+    const calorieService = useAxiosConfigured(process.env.REACT_APP_CALORIE_BASE_URL);
+    const { user } = useAuth0();
+    const navigate = useNavigate();
+
+    const onFinish = async (values) => {
         console.log('Submitted values:', values);
         // You can handle submission logic here
-        const formattedDate = values.date.format('YYYY-MM-DD');
-        console.log('Formatted date:', formattedDate);
-        // Now you can use the formatted date for further processing
+        const reqBody = {...values, userId: user.sub}
+        try {
+            const response = await calorieService.post("/", reqBody);
+            if (response.status == 200 || response.status === 201) {
+                notification.success({
+                    message: 'Success',
+                    description: 'Your request was successful.',
+                });
+
+                // Redirect to /activities-dashboard
+                navigate('/calorie-dashboard');
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     // TODO: figure out this calorie form
@@ -50,20 +70,7 @@ const CalorieTracking = () => {
             </div>
         ),
     });
-    const options = [
-        {
-            label: renderTitle('Libraries'),
-            options: [renderItem('AntDesign', 10000), renderItem('AntDesign UI', 10600)],
-        },
-        {
-            label: renderTitle('Solutions'),
-            options: [renderItem('AntDesign UI FAQ', 60100), renderItem('AntDesign FAQ', 30010)],
-        },
-        {
-            label: renderTitle('Articles'),
-            options: [renderItem('AntDesign design language', 100000)],
-        },
-    ];
+    const options = [];
 
     return (
         <div style={{ padding: 40 }}>
@@ -112,21 +119,18 @@ const CalorieTracking = () => {
                 <Form.Item
                     label="Carbs"
                     name="carbs"
-                    rules={[{ required: true, message: 'Please enter the carbs!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item
                     label="Protein"
                     name="protein"
-                    rules={[{ required: true, message: 'Please enter the protein!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item
                     label="Fat"
                     name="fat"
-                    rules={[{ required: true, message: 'Please enter the fat!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
@@ -140,34 +144,29 @@ const CalorieTracking = () => {
                 <Form.Item
                     label="Saturated Fat"
                     name="saturated_fat"
-                    rules={[{ required: true, message: 'Please enter the saturated fat!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item
                     label="Trans Fat"
                     name="trans_fat"
-                    rules={[{ required: true, message: 'Please enter the trans_fat!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item
                     label="Fiber"
                     name="fiber"
-                    rules={[{ required: true, message: 'Please select the fiber!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
                 <Form.Item
                     label="Sodium"
                     name="sodium"
-                    rules={[{ required: true, message: 'Please select the sodium!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item><Form.Item
                     label="Calcium"
                     name="calcium"
-                    rules={[{ required: true, message: 'Please select the calcium!' }]}
                 >
                     <InputNumber min={0} />
                 </Form.Item>
