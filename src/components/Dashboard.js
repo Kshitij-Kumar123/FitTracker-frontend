@@ -49,40 +49,6 @@ const Stats = ({ data }) => {
             });
         });
     };
-    // Function to render Statistic components based on stats
-    const renderStats = () => {
-        return Object.keys(stats).map(week => {
-            return Object.keys(stats[week]).map(category => {
-                return Object.keys(stats[week][category]).map(workout => {
-                    const workoutData = stats[week][category][workout];
-                    if (Object.keys(workoutData).length > 0) {
-                        return (
-                            <>
-                                <Col span={12} key={`${week}-${category}-${workout}`}>
-                                    <Card bordered={false} style={{ marginBottom: 16 }}>
-                                        <h3 style={{ marginBottom: 16 }}>{`${week} - ${category} - ${workout}`}</h3>
-                                        <div style={{ marginBottom: 8 }}>
-                                            <strong>Total Weight:</strong> {workoutData.totalWeight}
-                                        </div>
-                                        <div style={{ marginBottom: 8 }}>
-                                            <strong>Reps:</strong> {workoutData.reps}
-                                        </div>
-                                        <div style={{ marginBottom: 8 }}>
-                                            <strong>Count:</strong> {workoutData.count}
-                                        </div>
-                                        <div>
-                                            <strong>Avg Weight:</strong> {workoutData.avgWeight}
-                                        </div>
-                                    </Card>
-                                </Col>
-                            </>
-                        );
-                    }
-                    return null; // Skip rendering if no data available
-                });
-            });
-        });
-    };
 
     return (
         <div>
@@ -91,7 +57,7 @@ const Stats = ({ data }) => {
                 {/* Render improvement stats */}
                 {renderImprovementStats()}
                 {/* Render stats */}
-                {renderStats()}
+                {/* {renderStats()} */}
             </Row>
         </div>
     );
@@ -198,6 +164,11 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Ensure user is defined before making the API call
+                if (!user) {
+                    console.log('User is undefined');
+                    return;
+                }
                 let response = await fitnessService(`/user/${user.sub}`);
                 if (response.status == 200) {
                     const { activities, improvementStats, stats } = response.data;
@@ -208,9 +179,10 @@ const Dashboard = () => {
             } catch (err) {
                 console.log(err);
             }
-        }
+        };
+
         fetchData();
-    }, []);
+    }, [user]);
 
     if (activities.length === 0) {
         return <Spin />
