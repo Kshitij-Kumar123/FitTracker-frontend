@@ -13,7 +13,6 @@ const CalorieTracking = () => {
     const navigate = useNavigate();
 
     const onFinish = async (values) => {
-        console.log('Submitted values:', values);
         // You can handle submission logic here
         const reqBody = { ...values, userId: user.sub }
         try {

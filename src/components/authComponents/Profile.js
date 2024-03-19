@@ -3,6 +3,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "./Logout";
 import LoginButton from "./Login";
 
+// TODO: Extend this profile page later...
+
 const Profile = () => {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const [token, setToken] = useState("")
@@ -38,7 +40,6 @@ const Profile = () => {
                 <img src={user.picture} alt={user.name} />
                 <h2>{user.name}</h2>
                 <p>{user.email}</p>
-                {/* {console.log(token)} */}
                 <LogoutButton />
             </div>
         ) : <LoginButton />

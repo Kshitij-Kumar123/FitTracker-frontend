@@ -24,9 +24,11 @@ const ModalInfo = ({ data }) => {
 
 const Stats = ({ data }) => {
     const { improvementStats, stats } = data;
+    if (!improvementStats || !stats) return null;
 
     // Function to render Statistic components based on improvement stats
     const renderImprovementStats = () => {
+        if (!improvementStats) return null; // Return null if improvementStats is not available
         return Object.keys(improvementStats).map(category => {
             return Object.keys(improvementStats[category]).map(workout => {
                 return Object.keys(improvementStats[category][workout]).map(metric => {
@@ -56,8 +58,6 @@ const Stats = ({ data }) => {
             <Row gutter={[16, 16]}>
                 {/* Render improvement stats */}
                 {renderImprovementStats()}
-                {/* Render stats */}
-                {/* {renderStats()} */}
             </Row>
         </div>
     );
@@ -153,18 +153,15 @@ const ActivityDetails = ({ date, categories }) => {
         </div>
     );
 };
-
 const Dashboard = () => {
     const fitnessService = useAxiosConfigured(process.env.REACT_APP_FITNESS_BASE_URL);
     const [activities, setActivities] = useState([]);
-    const [stats, setStats] = useState({});
+    const [stats, setStats] = useState({}); // Initialize stats state with an empty object
     const { user } = useAuth0();
-
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Ensure user is defined before making the API call
                 if (!user) {
                     console.log('User is undefined');
                     return;
@@ -173,8 +170,7 @@ const Dashboard = () => {
                 if (response.status == 200) {
                     const { activities, improvementStats, stats } = response.data;
                     setActivities(activities);
-                    setStats({ improvementStats: improvementStats, stats: stats });
-                    console.log(response.data);
+                    setStats({ improvementStats: improvementStats, stats: stats }); // Set stats state
                 }
             } catch (err) {
                 console.log(err);
@@ -182,7 +178,7 @@ const Dashboard = () => {
         };
 
         fetchData();
-    }, [user]);
+    }, []); // Add user and fitnessService dependencies to useEffect
 
     if (activities.length === 0) {
         return <Spin />
@@ -196,7 +192,6 @@ const Dashboard = () => {
                 <ActivityDetails key={date} date={date} categories={categories} />
             ))}
         </>
-
     );
 }
 

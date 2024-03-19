@@ -81,7 +81,6 @@ const CalorieDashboard = () => {
         }
     ];
 
-    console.log("context userinfo: ", userInfo);
     return (
         <div style={{ padding: 40, backgroundSize: 'cover' }}>
             <h1 style={{ marginBottom: 20 }}>Calorie Dashboard</h1>

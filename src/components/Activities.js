@@ -43,23 +43,6 @@ const Activities = () => {
     const navigate = useNavigate();
 
     const onFinish = async (values) => {
-        console.log('Submitted values:', values);
-        // You can handle submission logic here
-        // {
-        //     "category": "Back",
-        //     "name": "Crunch Machine",
-        //     "weightUnit": "kg",
-        //     "weight": 10,
-        //     "speedUnit": "mph",
-        //     "speed": 6,
-        //     "hours": 2,
-        //     "minutes": 1,
-        //     "extraNotes": "some note",
-        //     "calorieBurned": -20,
-        //     "usefulLinks": ["google.com"]
-        //     "userId": "something"
-        // }
-        // TODO: add userId to it
         try {
             const dateToSubmit = form.getFieldValue('date') ? new Date(form.getFieldValue('date')) : new Date();
             const formattedDate = dateToSubmit.toLocaleString();
@@ -73,7 +56,6 @@ const Activities = () => {
             const response = await fitnessService.post('/', reqBody);
             if (response.status >= 200 && response.status < 300) {
                 console.log('Request was successful');
-                console.log('Response:', response.data);
                 notification.success({
                     message: 'Success',
                     description: 'Your request was successful.',
